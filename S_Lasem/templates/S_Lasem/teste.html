@@ -1,0 +1,106 @@
+{% extends 'S_Lasem/base.html'%}
+{% block content %}
+<br>
+	<div class="row">
+		<div class="col-md">
+			<div class="card card-body">
+				<p>Data: <span id="datetime"></span></p>
+				<script>
+				var dt = new Date();
+				document.getElementById("datetime").innerHTML = dt.toLocaleDateString();
+				</script>
+				<h5>Medições de Temperatura:</h5>
+			</div>
+		</div>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+	<script>
+		let socket=new WebSocket('ws://192.168.0.2:8000/ws/teste/');
+		socket.onopen=function(e){
+			alert('Connection established');
+		};
+		socket.onmessage = function(e){
+			console.log(e.data);
+			var recData=JSON.parse(e.data);
+			dataObjNew=dataObj['data']['datasets'][0]['data'];
+			dataObjNew.shift();
+			dataObjNew.push(recData.value1);
+			dataObj['data']['datasets'][0]['data']=dataObjNew;
+			window.myLine.update();
+			dataObjNew2=dataObj2['data']['datasets'][0]['data'];
+			dataObjNew2.shift();
+			dataObjNew2.push(recData.value2);
+			dataObj2['data']['datasets'][0]['data']=dataObjNew2;
+			window.myLine2.update();
+		};
+		socket.onclose=function(e){
+			alert('Connection Closed');
+			}
+	</script>
+<body>
+	<div style="max-width: 900px; max-height:400px;">
+		<canvas id="myChart" width="900" height="400"></canvas>
+	</div>
+</body>
+<script>
+var dataObj={
+    type: 'line',
+    data: {
+        labels: [1,2,3,4,5,6],
+        datasets: [{
+            label: 'Temperatura graus Celsius',
+            data: [12, 19, 3, 5, 2, 3],
+           
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+}
+var ctx = document.getElementById('myChart').getContext('2d');
+window.myLine = new Chart(ctx,dataObj );
+</script>
+<div class="row">
+		<div class="col-md">
+			<div class="card card-body">
+				
+				<h5>Medições de Umidade:</h5>
+			</div>
+		</div>
+	</div>
+<body>
+	<div style="max-width: 900px; max-height:400px;">
+		<canvas id="myChart2" width="900" height="400"></canvas>
+	</div>
+</body>
+<script>
+var dataObj2={
+    type: 'line',
+    data: {
+        labels: [1,2,3,4,5,6],
+        datasets: [{
+            label: 'Percentual de Umidade',
+            data: [12, 19, 3, 5, 2, 3],
+           
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+}
+var ctx2 = document.getElementById('myChart2').getContext('2d');
+window.myLine2 = new Chart(ctx2,dataObj2 );
+</script>
+{% endblock content %}

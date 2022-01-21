@@ -1,0 +1,113 @@
+{% extends 'S_Lasem/base.html'%}
+{% load static %}
+
+
+{% block content %}
+<head>
+	
+	<link rel="stylesheet" type="text/css" href="{% static 'css/bicicleta.css' %}">
+	<link rel="stylesheet"  href="{% static 'css/texto1.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/img_ciclista.css' %}">
+	<link rel="stylesheet"  href="{% static 'css/box.css' %}">
+
+	
+	<script>
+		let socket=new WebSocket('ws://192.168.0.2:8000/ws/teste/');
+		socket.onopen=function(e){
+			alert('Connection established');
+		};
+		socket.onmessage = function(e){
+			console.log(e.data);
+			var recData=JSON.parse(e.data);
+			document.getElementById("Velocidade").innerHTML = Math.round(recData.value1);
+			
+			
+		};
+		socket.onclose=function(e){
+			alert('Connection Closed');
+			}
+	</script>
+	
+	
+</head>
+
+<body>
+<div class="hero-image">
+  <div class="hero-text">
+	 
+    <h1>Bicicleta Inteligente</h1>
+    
+    
+  </div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+	<div class="card">
+		<div class="card-body">
+			<p>O projeto do computador de bordo para bicicletas foi desenvolvido
+			no laboratório de sistemas embarcados da UFRN (Lasem), e tem por objetivo monitorar dados que são determinantes
+			para um bom passeio dos ciclistas com informação e segurança,abaixo poderemos visualizar gráficos em tempo real que nos informam
+			a localização,velocidade e distância percorrida pelo usuário.</p>
+		</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+		
+		<div class="col-6"><h2>Data: <span id="datetime"></span></h2></div>
+		<script src="{% static 'js/Data.js' %}"></script>
+				
+</div>			
+<div>
+		<h2>Hora: <span id="time"></span></h2>
+		<script src="{% static 'js/hora.js' %}"></script>
+
+</div>
+<div class="row">
+	<div class="col-md-5">
+		
+		<div class="card card-body">
+			<h5>Velocidade:</h5>
+			<hr>
+			<h4><span id="Velocidade"></span>km/h</h4>
+			<script src="{% static 'js/velocimetro1.js' %}"></script>
+				<body onload='start(0);'>
+					<canvas id="speedometer" width="440" height="220">Canvas not available.</canvas>
+
+				</body>
+			
+			
+			
+			</div>
+		</div>
+		<div class="col-6">
+			<div class="card card-body">
+				<h5>Distância percorrida:</h5>
+				<hr>
+				<img src="{% static 'images/ciclista.png' %}">
+				<h4>Distância total percorrida:</h4>
+				<h4> Distância percorrida na viagem:</h4>
+				<br>
+				<br>
+				
+		</div>
+	</div>
+  </div>
+  <br>
+  <br>
+  <div class="row">
+	  <div class="card" >
+		<div class="card-body" width="500" height="800" justify-content: center>
+		 <h5>Localização:</h5>
+		 <hr>
+		<div id="box">
+		{{ map|safe }}
+		</div>
+	</div>
+	</div>
+	</div>
+</body>	
+
+{% endblock content %}
+
+

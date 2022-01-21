@@ -1,0 +1,11 @@
+.box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+}
+
+.box div {
+  width: 800px;
+  height: 500px;
+}
